@@ -30,93 +30,53 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  /// 需要导入 dart:io 库
+  /// import 'dart:io';
+  File _image;
 
-  void _incrementCounter() {
+  // 图片获取引擎
+  final picker = ImagePicker();
+
+  /// 获取摄像头图像的方法
+  Future getImageFromCamera() async {
+    /// 菜单按钮消失
+    Navigator.pop(context);
+
+    /// 需要导入 image_picker.dart 包
+    /// import 'package:image_picker/image_picker.dart';
+    final pickedFile =
+    await picker.getImage(source: ImageSource.camera);
+
     setState(() {
-      _counter++;
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  /// 获取相册中的图像
+  Future getImageFromGallery() async {
+    /// 菜单按钮消失
+    Navigator.pop(context);
+
+    /// 需要导入 image_picker.dart 包
+    /// import 'package:image_picker/image_picker.dart';
+    final pickedFile =
+    await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    /// 需要导入 dart:io 库
-    /// import 'dart:io';
-    File _image;
-
-    final picker = ImagePicker();
-
-    /*Future getImage() async {
-
-      final pickedFile = await picker.getImage(source: ImageSource.camera);
-
-      setState(() {
-        if (pickedFile != null) {
-          _image = File(pickedFile.path);
-        } else {
-          print('No image selected.');
-        }
-      });
-    }*/
-
-    /// 获取摄像头图像的方法
-    Future getImageFromCamera() async {
-      /// 菜单按钮消失
-      //Navigator.pop(context);
-
-      /// 需要导入 image_picker.dart 包
-      /// import 'package:image_picker/image_picker.dart';
-      final pickedFile =
-          await ImagePicker.pickImage(source: ImageSource.camera);
-
-      setState(() {
-        if (pickedFile != null) {
-          _image = File(pickedFile.path);
-        } else {
-          print('No image selected.');
-        }
-      });
-    }
-
-    /// 获取相册中的图像
-    Future getImageFromGallery() async {
-      /// 菜单按钮消失
-      //Navigator.pop(context);
-
-      /// 需要导入 image_picker.dart 包
-      /// import 'package:image_picker/image_picker.dart';
-      final pickedFile =
-      await ImagePicker.pickImage(source: ImageSource.gallery);
-
-      setState(() {
-        if (pickedFile != null) {
-          _image = File(pickedFile.path);
-        } else {
-          print('No image selected.');
-        }
-      });
-    }
-
-    /*Future<void> retrieveLostData() async {
-      final LostData response =
-      await picker.getLostData();
-      if (response.isEmpty) {
-        return;
-      }
-      if (response.file != null) {
-        setState(() {
-          if (response.type == RetrieveType.video) {
-            _handleVideo(response.file);
-          } else {
-            _handleImage(response.file);
-          }
-        });
-      } else {
-        _handleError(response.exception);
-      }
-    }*/
-
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
