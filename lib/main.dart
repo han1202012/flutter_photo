@@ -121,7 +121,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           onTap: (){
                             // 调用 getImageFromGallery 方法 , 调出相册
                             getImageFromGallery();
-
                           },
                         ),
                       ),
