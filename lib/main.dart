@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -34,6 +35,9 @@ class _MyHomePageState extends State<MyHomePage> {
   /// import 'dart:io';
   File _image;
 
+  /// 存放获取的图片集合, 初始化时为空
+  List<File> _images = [];
+
   // 图片获取引擎
   final picker = ImagePicker();
 
@@ -49,7 +53,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       if (pickedFile != null) {
-        _image = File(pickedFile.path);
+        //_image = File(pickedFile.path);
+        /// 添加到图片文件集合中
+        _images.add(File(pickedFile.path));
       } else {
         print('No image selected.');
       }
@@ -68,7 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       if (pickedFile != null) {
-        _image = File(pickedFile.path);
+        //_image = File(pickedFile.path);
+        /// 添加到图片文件集合中
+        _images.add(File(pickedFile.path));
       } else {
         print('No image selected.');
       }
@@ -82,7 +90,70 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: _image == null ? Text('No image selected.') : Image.file(_image),
+        child: Wrap(
+          spacing: 5,
+          runSpacing: 5,
+          children:
+
+
+          // 遍历 从相册选择的照片 或 相机拍摄的照片
+          _images.map((file){
+            // 每个照片都生成一个帧布局
+            // 照片填充整个布局, 右上角放置一个关闭按钮
+            return Stack(
+              children: <Widget>[
+
+                // 设置底部的大图片
+                ClipRRect(
+                  // 设置圆角半径 5 像素
+                  borderRadius: BorderRadius.circular(5),
+                  // 设置图片
+                  child: Image.file(file, width: 120, height: 90, fit: BoxFit.fill,),
+                ),
+
+                // 设置右上角的关闭按钮
+                Positioned(
+                  // 距离右侧 5
+                  right: 5,
+                  // 距离顶部 5
+                  top: 5,
+
+                  // 手势检测器组件
+                  child: GestureDetector(
+                    // 点击事件
+                    onTap: (){
+                      setState(() {
+                        // 从图片集合中移除该图片
+                        _images.remove(file);
+                      });
+                    },
+
+                    // 右上角的删除按钮
+                    child: ClipOval(
+                      child: Container(
+                        padding: EdgeInsets.all(3),
+
+                        // 背景装饰
+                        decoration: BoxDecoration(color: Colors.black),
+
+                        // 图标, 20 像素 , 白色 , 关闭按钮
+                        child: Icon(Icons.close, size: 20, color: Colors.white,),
+                      ),
+                    ),
+
+                  ),
+                )
+
+              ],
+            );
+
+            /// 注意这里要转为 List 类型 , <Widget>[]
+          }).toList()
+
+
+          ,
+
+        )
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -134,5 +205,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add_a_photo),
       ),
     );
+  }
+
+  _generateImageWidgets() {
+
+
   }
 }
